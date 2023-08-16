@@ -22,6 +22,9 @@
 			]
 		}
 	},
+	"containerEnv": {
+		"PYTHONPATH": "/workspaces/catz/src"
+	},
 	"forwardPorts": [
 		8000
 	],
