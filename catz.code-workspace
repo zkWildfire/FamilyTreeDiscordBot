@@ -3,6 +3,10 @@
 		{
 			"name": "Root",
 			"path": "."
+		},
+		{
+			"name": "Source",
+			"path": "src"
 		}
 	],
 	"settings": {
@@ -39,7 +43,6 @@
 		// This must not be configured here as it will override the equivalent
 		//   .editorconfig setting
 		// "files.trimTrailingWhitespace": true,
-		"omnisharp.enableRoslynAnalyzers": true,
 		"python.analysis.typeCheckingMode": "strict",
 		"python.languageServer": "Pylance",
 		"python.testing.pytestEnabled": true,
