@@ -1,0 +1,32 @@
+{
+	"name": "Linux Dev Container",
+	"dockerComposeFile": [
+		"docker-compose.yml"
+	],
+	"service": "dev",
+	"workspaceFolder": "/workspaces/catz",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"eamodio.gitlens",
+				"EditorConfig.EditorConfig",
+				"FordLabs.copyrighter",
+				"github.vscode-github-actions",
+				"jebbs.plantuml",
+				"ms-azuretools.vscode-docker",
+				"ms-python.python",
+				"ryanluker.vscode-coverage-gutters",
+				"streetsidesoftware.code-spell-checker",
+				"timonwong.shellcheck",
+				"yzhang.markdown-all-in-one"
+			]
+		}
+	},
+	"forwardPorts": [
+		8000
+	],
+	"mounts": [
+		"source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind",
+		"source=/usr/bin/docker,target=/usr/bin/docker,type=bind"
+	]
+}
