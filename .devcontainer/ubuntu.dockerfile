@@ -26,8 +26,8 @@ RUN apt-get update -y && \
 		/usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 3
 
 # Install pip packages
-# COPY requirements.txt /tmp/kagamii/requirements.txt
-# RUN python3 -m pip install -r /tmp/kagamii/requirements.txt
+COPY requirements.txt /tmp/kagamii/requirements.txt
+RUN python3 -m pip install -r /tmp/kagamii/requirements.txt
 
 # Create the user
 RUN groupadd --gid $USER_GID $USERNAME && \
