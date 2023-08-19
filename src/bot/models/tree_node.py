@@ -1,4 +1,5 @@
 from __future__ import annotations
+from bot.util.discord_statics import DiscordStatics
 from typing import Optional
 
 class TreeNode:
@@ -30,6 +31,18 @@ class TreeNode:
 		self._user_nickname = user_nickname
 		self._background_color = background_color
 		self._inviter = inviter
+
+
+	@property
+	def discord_full_username(self) -> str:
+		"""
+		Gets the full username of the user's discord account.
+		This is the username and discriminator combined.
+		"""
+		return DiscordStatics.get_full_username(
+			self._discord_username,
+			self._discord_user_id
+		)
 
 
 	@property
@@ -80,3 +93,32 @@ class TreeNode:
 		diagram.
 		"""
 		return self._background_color
+
+
+	@background_color.setter
+	def background_color(self, value: str):
+		"""
+		Sets the background color to use for the user's node in the generated
+		diagram.
+		@throws ValueError if the value is empty.
+		"""
+		if not value:
+			raise ValueError("Cannot set a user's background color to the empty string.")
+
+		self._background_color = value
+
+
+	@property
+	def inviter(self) -> Optional[TreeNode]:
+		"""
+		Gets the node of the user that invited the user to the server.
+		"""
+		return self._inviter
+
+
+	@inviter.setter
+	def inviter(self, value: Optional[TreeNode]):
+		"""
+		Sets the node of the user that invited the user to the server.
+		"""
+		self._inviter = value
