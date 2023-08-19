@@ -5,9 +5,9 @@ from bot.views.tree_view import ITreeView
 from bot.views.list_tree_view import ListTreeView
 from typing import Dict
 
-class GraphFamilyTree(IFamilyTree):
+class DictFamilyTree(IFamilyTree):
 	"""
-	Graph-based implementation of the family tree data model.
+	Family tree implementation that keeps track of nodes in a dictionary.
 	"""
 	def __init__(self, root_node: TreeNode):
 		"""
