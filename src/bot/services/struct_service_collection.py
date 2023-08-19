@@ -1,5 +1,5 @@
-from bot.services.family_tree_service import IFamilyTreeService
-from bot.services.serialization_service import ISerializationService
+from bot.services.family_tree.family_tree_service import IFamilyTreeService
+from bot.services.serialization.serialization_service import ISerializationService
 from bot.services.service_collection import IServiceCollection
 
 class StructServiceCollection(IServiceCollection):

@@ -1,7 +1,7 @@
 from bot.models.dict_family_tree import DictFamilyTree
 from bot.models.family_tree import IFamilyTree
 from bot.models.tree_node import TreeNode
-from bot.services.serialization_service import ISerializationService
+from bot.services.serialization.serialization_service import ISerializationService
 import json
 from pathlib import Path
 from typing import Dict, List

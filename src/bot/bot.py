@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # Entry point for the Family Tree Discord bot.
 import argparse
-from bot.services.dict_family_tree_service import DictFamilyTreeService
-from bot.services.json_serialization_service import JsonSerializationService
+from bot.services.family_tree.dict_family_tree_service import DictFamilyTreeService
+from bot.services.serialization.json_serialization_service import JsonSerializationService
 from bot.services.service_collection import IServiceCollection
 from bot.services.struct_service_collection import StructServiceCollection
 from pathlib import Path

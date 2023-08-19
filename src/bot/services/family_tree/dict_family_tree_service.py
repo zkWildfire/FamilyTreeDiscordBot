@@ -2,7 +2,7 @@ from bot.events.family_tree_service_events import FamilyTreeServiceEvents
 from bot.models.dict_family_tree import DictFamilyTree
 from bot.models.family_tree import IFamilyTree
 from bot.models.tree_node import TreeNode
-from bot.services.family_tree_service import IFamilyTreeService
+from bot.services.family_tree.family_tree_service import IFamilyTreeService
 from typing import Dict
 
 class DictFamilyTreeService(IFamilyTreeService):
