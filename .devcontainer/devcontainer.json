@@ -11,6 +11,7 @@
 				"eamodio.gitlens",
 				"EditorConfig.EditorConfig",
 				"FordLabs.copyrighter",
+				"GitHub.copilot",
 				"github.vscode-github-actions",
 				"jebbs.plantuml",
 				"ms-azuretools.vscode-docker",
