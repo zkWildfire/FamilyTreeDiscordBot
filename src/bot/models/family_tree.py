@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from bot.events.family_tree_events import FamilyTreeEvents
 from bot.models.tree_node import TreeNode
 from bot.views.tree_view import ITreeView
 
@@ -10,6 +11,15 @@ class IFamilyTree(ABC):
 	def __len__(self) -> int:
 		"""
 		Gets the number of nodes in the tree.
+		"""
+		raise NotImplementedError()
+
+
+	@property
+	@abstractmethod
+	def events(self) -> FamilyTreeEvents:
+		"""
+		Event emitter for all family tree events.
 		"""
 		raise NotImplementedError()
 

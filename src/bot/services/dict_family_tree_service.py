@@ -1,5 +1,4 @@
-from bot.events.event import IEvent
-from bot.events.family_tree_events import FamilyTreeEvents
+from bot.events.family_tree_service_events import FamilyTreeServiceEvents
 from bot.models.dict_family_tree import DictFamilyTree
 from bot.models.family_tree import IFamilyTree
 from bot.models.tree_node import TreeNode
@@ -18,27 +17,15 @@ class DictFamilyTreeService(IFamilyTreeService):
 		self._family_trees: Dict[int, IFamilyTree] = {}
 
 		# Events object used to broadcast to event listeners
-		self._events = FamilyTreeEvents()
+		self._events = FamilyTreeServiceEvents()
 
 
 	@property
-	def on_family_tree_created(self) -> IEvent[int, IFamilyTree]:
+	def events(self) -> FamilyTreeServiceEvents:
 		"""
-		An event that is emitted when a new family tree is created.
-		The arguments will be the ID of the discord server and the new family
-		  tree instance that was created for the Discord server. The family
-		  tree instance will contain at least one node.
+		Event emitter for all family tree events.
 		"""
-		return self._events.on_family_tree_created # type: ignore
-
-
-	@property
-	def on_family_tree_deleted(self) -> IEvent[int]:
-		"""
-		An event that is emitted when a new family tree is created.
-		The argument will be the ID of the discord server that was removed.
-		"""
-		return self._events.on_family_tree_deleted # type: ignore
+		return self._events
 
 
 	def register_discord_server(self,
@@ -56,6 +43,8 @@ class DictFamilyTreeService(IFamilyTreeService):
 			)
 
 		tree = DictFamilyTree(root_node)
+		tree.events.on_modified += lambda t: self._events.on_family_tree_modified(server_id, t) # type: ignore
+
 		self._family_trees[server_id] = tree
 		self._events.on_family_tree_created(server_id, tree)
 
@@ -71,8 +60,9 @@ class DictFamilyTreeService(IFamilyTreeService):
 				f"Family tree for server {server_id} does not exist."
 			)
 
+		tree = self._family_trees[server_id]
 		del self._family_trees[server_id]
-		self._events.on_family_tree_deleted(server_id)
+		self._events.on_family_tree_deleted(server_id, tree)
 
 
 	def get_family_tree(self, server_id: int) -> IFamilyTree:

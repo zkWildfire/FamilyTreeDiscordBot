@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from bot.events.event import IEvent
+from bot.events.family_tree_service_events import FamilyTreeServiceEvents
 from bot.models.family_tree import IFamilyTree
 from bot.models.tree_node import TreeNode
 
@@ -9,22 +9,9 @@ class IFamilyTreeService(ABC):
 	"""
 	@property
 	@abstractmethod
-	def on_family_tree_created(self) -> IEvent[int, IFamilyTree]:
+	def events(self) -> FamilyTreeServiceEvents:
 		"""
-		An event that is emitted when a new family tree is created.
-		The arguments will be the ID of the discord server and the new family
-		  tree instance that was created for the Discord server. The family
-		  tree instance will contain at least one node.
-		"""
-		raise NotImplementedError()
-
-
-	@property
-	@abstractmethod
-	def on_family_tree_deleted(self) -> IEvent[int]:
-		"""
-		An event that is emitted when a new family tree is created.
-		The argument will be the ID of the discord server that was removed.
+		Event emitter for all family tree events.
 		"""
 		raise NotImplementedError()
 

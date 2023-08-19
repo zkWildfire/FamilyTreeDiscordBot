@@ -1,3 +1,4 @@
+from bot.events.family_tree_events import FamilyTreeEvents
 from bot.models.tree_node import TreeNode
 from bot.models.family_tree import IFamilyTree
 from bot.util.discord_statics import DiscordStatics
@@ -15,6 +16,7 @@ class DictFamilyTree(IFamilyTree):
 		@param root_node The root node of the tree.
 		"""
 		self._root_node = root_node
+		self._events = FamilyTreeEvents()
 
 		# Dictionary of all nodes in the tree
 		# Each node is indexed by the full username of the user.
@@ -28,6 +30,14 @@ class DictFamilyTree(IFamilyTree):
 		Gets the number of nodes in the tree.
 		"""
 		return len(self._nodes)
+
+
+	@property
+	def events(self) -> FamilyTreeEvents:
+		"""
+		Event emitter for all family tree events.
+		"""
+		return self._events
 
 
 	def add_node(self, node: TreeNode) -> None:
