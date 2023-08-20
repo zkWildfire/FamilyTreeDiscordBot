@@ -8,8 +8,44 @@ from bot.services.family_tree.dict_family_tree_service import DictFamilyTreeServ
 from bot.services.serialization.json_serialization_service import JsonSerializationService
 from bot.services.service_collection import IServiceCollection
 from bot.services.struct_service_collection import StructServiceCollection
+import logging
 from pathlib import Path
+from typing import Dict
 import sys
+
+# Log levels that may be specified on the command line
+LOG_LEVELS: Dict[str, int] = {
+	"critical": logging.CRITICAL,
+	"error": logging.ERROR,
+	"warning": logging.WARNING,
+	"info": logging.INFO,
+	"debug": logging.DEBUG
+}
+
+class BotFormatter(logging.Formatter):
+	"""
+	Formatter used for logging bot messages.
+	"""
+	# Mapping of log levels to the single character used to represent them.
+	LOG_LEVEL_MAPPING = {
+		'DEBUG': 'D',
+		'INFO': 'I',
+		'WARNING': 'W',
+		'ERROR': 'E',
+		'CRITICAL': 'C'
+	}
+
+	def format(self, record: logging.LogRecord) -> str:
+		"""
+		Re-maps the log level name to a single character.
+		@param record The log record to format.
+		@returns The formatted log record.
+		"""
+		record.levelname = BotFormatter.LOG_LEVEL_MAPPING.get(
+			record.levelname,
+			record.levelname[0]
+		)
+		return super().format(record)
 
 class CliArgs(argparse.Namespace):
 	"""
@@ -28,6 +64,9 @@ class CliArgs(argparse.Namespace):
 	# If enabled, provides a CLI to simulate Discord events instead of
 	#   connecting to Discord's API.
 	local: bool
+
+	# The level of logging to use.
+	log_level: str
 
 
 def make_parser() -> argparse.ArgumentParser:
@@ -55,6 +94,13 @@ def make_parser() -> argparse.ArgumentParser:
 		action="store_true",
 		help="If enables, uses a CLI to simulate Discord events instead of "
 			"connecting to Discord's API."
+	)
+	parser.add_argument(
+		"--log-level",
+		default="info",
+		choices=list(LOG_LEVELS.keys()),
+		type=str,
+		help="The level of logging to use."
 	)
 	return parser
 
@@ -97,6 +143,20 @@ def main(*cli_args: str) -> int:
 	# Process command line arguments
 	parser = make_parser()
 	args = parser.parse_args(cli_args, namespace=CliArgs())
+
+	# Configure logging
+	logger = logging.getLogger()
+	logger.setLevel(LOG_LEVELS[args.log_level])
+
+	# Configure the format used for logging
+	handler = logging.StreamHandler()
+	handler.setLevel(logging.DEBUG)
+	formatter = BotFormatter(
+		"(%(levelname)s)[%(asctime)s] %(filename)s:%(lineno)d: %(message)s",
+		datefmt = "%Y-%m-%d %H:%M:%S"
+	)
+	handler.setFormatter(formatter)
+	logger.addHandler(handler)
 
 	# Create the service collection
 	services = make_services(args)

@@ -1,7 +1,10 @@
 import argparse
 from bot.bot_events.discord_events import DiscordEvents
 from bot.services.discord.discord_service import IDiscordService
+import logging
 from typing import Callable, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 class CliDiscordServiceArgs(argparse.Namespace):
 	"""
@@ -120,6 +123,10 @@ class CliDiscordService(IDiscordService):
 		Emits the on_server_added event.
 		@param args The command line arguments to process.
 		"""
+		logger.info(
+			"Emitting on_server_added event:\n"
+			f"  server_id: {args.server_id}"
+		)
 		self._events.on_server_added(args.server_id)
 
 
@@ -221,10 +228,9 @@ class CliDiscordService(IDiscordService):
 			exit_on_error=False
 		)
 		parser.add_argument(
-			"--type",
+			"type",
 			choices=cmds,
 			type=str,
-			required=True,
 			help="The type of command to process."
 		)
 		parser.add_argument(
