@@ -265,12 +265,16 @@ class CliDiscordService(IDiscordService):
 		)
 		parser.add_argument(
 			"--server-id",
+			"--sid",
+			dest="server_id",
 			type=int,
 			required=True,
 			help="The ID of the server the command is for."
 		)
 		parser.add_argument(
 			"--inviter-id",
+			"--iid",
+			dest="inviter_id",
 			type=int,
 			required=False,
 			help="The ID of the user who created the invite. Only applicable "
@@ -278,6 +282,8 @@ class CliDiscordService(IDiscordService):
 		)
 		parser.add_argument(
 			"--invite-code",
+			"--ic",
+			dest="invite_code",
 			type=str,
 			required=False,
 			help="The code of the invite. Only applicable for invite_created "
@@ -285,6 +291,8 @@ class CliDiscordService(IDiscordService):
 		)
 		parser.add_argument(
 			"--create-time",
+			"--ct",
+			dest="create_time",
 			type=str,
 			required=False,
 			help="The time the invite was created. Only applicable for "
@@ -292,6 +300,8 @@ class CliDiscordService(IDiscordService):
 		)
 		parser.add_argument(
 			"--expire-time",
+			"--et",
+			dest="expire_time",
 			type=str,
 			required=False,
 			help="The time the invite expires. Only applicable for "
@@ -299,6 +309,8 @@ class CliDiscordService(IDiscordService):
 		)
 		parser.add_argument(
 			"--user-id",
+			"--uid",
+			dest="user_id",
 			type=int,
 			required=False,
 			help="The ID of the user the command is for. Only applicable for "
@@ -306,6 +318,8 @@ class CliDiscordService(IDiscordService):
 		)
 		parser.add_argument(
 			"--username",
+			"--name",
+			dest="username",
 			type=str,
 			required=False,
 			help="The username of the user the command is for. Only applicable "
@@ -313,6 +327,8 @@ class CliDiscordService(IDiscordService):
 		)
 		parser.add_argument(
 			"--discriminator",
+			"--dc",
+			dest="discriminator",
 			type=int,
 			required=False,
 			help="The discriminator of the user the command is for. Only "
@@ -320,6 +336,8 @@ class CliDiscordService(IDiscordService):
 		)
 		parser.add_argument(
 			"--new-nickname",
+			"--nick",
+			dest="new_nickname",
 			type=str,
 			required=False,
 			help="The new nickname of the user the command is for. Only "
