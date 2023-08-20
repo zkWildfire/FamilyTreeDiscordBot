@@ -178,7 +178,7 @@ def main(*cli_args: str) -> int:
 	handler = logging.StreamHandler()
 	handler.setLevel(logging.DEBUG)
 	formatter = BotFormatter(
-		"(%(levelname)s)[%(asctime)s] %(filename)s:%(lineno)d: %(message)s",
+		"(%(levelname)s)[%(asctime)s.%(msecs)03d] %(filename)s:%(lineno)d: %(message)s",
 		datefmt = "%Y-%m-%d %H:%M:%S"
 	)
 	handler.setFormatter(formatter)
