@@ -135,6 +135,10 @@ class CliDiscordService(IDiscordService):
 		Emits the on_server_removed event.
 		@param args The command line arguments to process.
 		"""
+		logger.info(
+			"Emitting on_server_removed event:\n"
+			f"  server_id: {args.server_id}"
+		)
 		self._events.on_server_removed(args.server_id)
 
 
@@ -153,6 +157,14 @@ class CliDiscordService(IDiscordService):
 		if args.expire_time is None:
 			raise ValueError("Missing --expire-time argument")
 
+		logger.info(
+			"Emitting on_invite_created event:\n"
+			f"  server_id: {args.server_id}\n"
+			f"  inviter_id: {args.inviter_id}\n"
+			f"  invite_code: {args.invite_code}\n"
+			f"  create_time: {args.create_time}\n"
+			f"  expire_time: {args.expire_time}"
+		)
 		self._events.on_invite_created(
 			args.server_id,
 			args.inviter_id,
@@ -175,6 +187,13 @@ class CliDiscordService(IDiscordService):
 		if args.discriminator is None:
 			raise ValueError("Missing --discriminator argument")
 
+		logger.info(
+			"Emitting on_user_joined event:\n"
+			f"  server_id: {args.server_id}\n"
+			f"  user_id: {args.user_id}\n"
+			f"  username: {args.username}\n"
+			f"  discriminator: {args.discriminator}"
+		)
 		self._events.on_user_joined(
 			args.server_id,
 			args.user_id,
@@ -192,6 +211,11 @@ class CliDiscordService(IDiscordService):
 		if args.user_id is None:
 			raise ValueError("Missing --user-id argument")
 
+		logger.info(
+			"Emitting on_user_left event:\n"
+			f"  server_id: {args.server_id}\n"
+			f"  user_id: {args.user_id}"
+		)
 		self._events.on_user_left(args.server_id, args.user_id)
 
 
@@ -206,6 +230,12 @@ class CliDiscordService(IDiscordService):
 		if args.new_nickname is None:
 			raise ValueError("Missing --new-nickname argument")
 
+		logger.info(
+			"Emitting on_user_nickname_changed event:\n"
+			f"  server_id: {args.server_id}\n"
+			f"  user_id: {args.user_id}\n"
+			f"  new_nickname: {args.new_nickname}"
+		)
 		self._events.on_user_nickname_changed(
 			args.server_id,
 			args.user_id,
