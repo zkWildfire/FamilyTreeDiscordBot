@@ -3,8 +3,11 @@ from bot.models.family_tree import IFamilyTree
 from bot.models.tree_node import TreeNode
 from bot.services.serialization.serialization_service import ISerializationService
 import json
+import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 class JsonSerializationService(ISerializationService):
 	"""
@@ -166,5 +169,6 @@ class JsonSerializationService(ISerializationService):
 		@param file The file to write to.
 		@param data The data to write to the file.
 		"""
+		logger.info(f"Saving family tree data to '{file}'.")
 		with file.open("w") as f:
 			json.dump(data, f, indent=2)
