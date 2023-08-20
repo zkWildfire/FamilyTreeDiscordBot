@@ -1,4 +1,4 @@
-from bot.events.family_tree_service_events import FamilyTreeServiceEvents
+from bot.bot_events.family_tree_service_events import FamilyTreeServiceEvents
 from bot.models.dict_family_tree import DictFamilyTree
 from bot.models.family_tree import IFamilyTree
 from bot.models.tree_node import TreeNode

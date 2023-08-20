@@ -1,5 +1,5 @@
 import argparse
-from bot.events.discord_events import DiscordEvents
+from bot.bot_events.discord_events import DiscordEvents
 from bot.services.discord.discord_service import IDiscordService
 from typing import Callable, Dict, List, Optional
 
@@ -91,14 +91,27 @@ class CliDiscordService(IDiscordService):
 		Processes the command and emits the appropriate event.
 		@param cli_args The command line arguments to process.
 		"""
-		args = self._parser.parse_args(
-			cli_args,
-			namespace=CliDiscordServiceArgs()
-		)
-
 		try:
+			args = self._parser.parse_args(
+				cli_args,
+				namespace=CliDiscordServiceArgs()
+			)
 			self._cmd_handlers[args.type](args)
-		except Exception as e:
+		# For some reason, even though the parser is configured with
+		#   `exit_on_error=False`, it's still throwing a SystemExit exception
+		#   when it fails to parse the arguments. As a workaround, catch the
+		#   exception and ignore it instead of exiting. Note that nothing needs
+		#   to be printed here as the parser will have already printed an error
+		#   message.
+		except SystemExit as e:
+			pass
+		except argparse.ArgumentError as e:
+			# If the user entered an invalid command, print an error message
+			#   but otherwise ignore it
+			# This is the code path that *should* be taken but isn't being
+			#   taken since the parser is throwing a SystemExit exception.
+			print(e)
+		except ValueError as e:
 			print(e)
 
 
@@ -200,6 +213,9 @@ class CliDiscordService(IDiscordService):
 		@returns The argument parser for the service.
 		"""
 		parser = argparse.ArgumentParser(
+			# This is the string that must be typed into the terminal to select
+			#   this class as the handler for the CLI command
+			prog="event",
 			description="Processes event commands originating from the CLI "
 				"for testing purposes.",
 			exit_on_error=False

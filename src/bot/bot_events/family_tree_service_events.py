@@ -15,5 +15,5 @@ class FamilyTreeServiceEvents(Events):
 
 		# Event emitted when a Discord server is removed.
 		# Args: (discord_server_id: int)
-		"on_family_tree_deleted"
+		"on_family_tree_removed"
 	)

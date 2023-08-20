@@ -1,4 +1,4 @@
-from bot.events.discord_events import DiscordEvents
+from bot.bot_events.discord_events import DiscordEvents
 from bot.services.discord.discord_service import IDiscordService
 
 class ApiDiscordService(IDiscordService):

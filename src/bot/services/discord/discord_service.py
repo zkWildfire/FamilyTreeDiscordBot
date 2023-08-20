@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from bot.events.discord_events import DiscordEvents
+from bot.bot_events.discord_events import DiscordEvents
 
 class IDiscordService(ABC):
 	"""

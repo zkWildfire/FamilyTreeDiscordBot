@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from bot.events.family_tree_events import FamilyTreeEvents
+from bot.bot_events.family_tree_events import FamilyTreeEvents
 from bot.models.tree_node import TreeNode
 from bot.views.tree_view import ITreeView
 

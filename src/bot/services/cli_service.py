@@ -46,9 +46,15 @@ class CliService:
 		while cmd != CliService.EXIT_CMD:
 			# Wait for the user to enter a command
 			cli_args = input(">> ").split(" ")
-			args = self._parser.parse_args(cli_args, namespace=CliArgs())
-			self._cmd_handlers[args.cmd_type](args)
-			cmd = args.cmd_type
+
+			try:
+				args = self._parser.parse_args(cli_args, namespace=CliArgs())
+				self._cmd_handlers[args.cmd_type](args)
+				cmd = args.cmd_type
+			except argparse.ArgumentError as e:
+				# If the user entered an invalid command, print an error message
+				#   but otherwise ignore it
+				print(e)
 
 
 	def _process_discord_event(self, args: CliArgs) -> None:
@@ -73,7 +79,8 @@ class CliService:
 		@returns The argument parser for the service.
 		"""
 		parser = argparse.ArgumentParser(
-			description="CLI command parser for local testing."
+			description="CLI command parser for local testing.",
+			exit_on_error=False
 		)
 		parser.add_argument(
 			"cmd_type",

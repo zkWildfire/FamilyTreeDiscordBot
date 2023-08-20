@@ -1,4 +1,4 @@
-from bot.events.family_tree_events import FamilyTreeEvents
+from bot.bot_events.family_tree_events import FamilyTreeEvents
 from bot.models.tree_node import TreeNode
 from bot.models.family_tree import IFamilyTree
 from bot.util.discord_statics import DiscordStatics

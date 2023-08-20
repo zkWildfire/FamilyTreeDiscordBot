@@ -1,0 +1,15 @@
+{
+	"configurations": [
+		{
+			"name": "Debug Family Tree Bot (Local)",
+			"type": "python",
+			"request": "launch",
+			"program": "${workspaceFolder:Source}/bot/family_tree_bot.py",
+			"args": [
+				"--local"
+			],
+			"console": "integratedTerminal",
+			"justMyCode": true
+		}
+	]
+}
