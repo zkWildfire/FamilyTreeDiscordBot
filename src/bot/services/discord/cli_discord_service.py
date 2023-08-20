@@ -40,21 +40,21 @@ class CliDiscordServiceArgs(argparse.Namespace):
 	expire_time: Optional[str]
 
 	# The ID of the user the command is for.
-	# Only applicable for user_joined, user_left, and user_nickname_changed
-	#   commands.
+	# Only applicable for server_added, user_joined, user_left, and
+	#   user_nickname_changed commands.
 	user_id: Optional[int]
 
 	# The username of the user the command is for.
-	# Only applicable for user_joined commands.
+	# Only applicable for server_added and user_joined commands.
 	username: Optional[str]
 
 	# The discriminator of the user the command is for.
-	# Only applicable for user_joined commands.
+	# Only applicable for server_added and user_joined commands.
 	discriminator: Optional[int]
 
-	# The new nickname of the user the command is for.
-	# Only applicable for user_nickname_changed commands.
-	new_nickname: Optional[str]
+	# The (maybe new) nickname of the user the command is for.
+	# Only applicable for server_added and user_nickname_changed commands.
+	nickname: Optional[str]
 
 
 class CliDiscordService(IDiscordService):
@@ -123,9 +123,22 @@ class CliDiscordService(IDiscordService):
 		Emits the on_server_added event.
 		@param args The command line arguments to process.
 		"""
+		if args.user_id is None:
+			raise ValueError("Missing --user-id argument")
+		if args.username is None:
+			raise ValueError("Missing --username argument")
+		if args.discriminator is None:
+			raise ValueError("Missing --discriminator argument")
+		if args.nickname is None:
+			raise ValueError("Missing --nickname argument")
+
 		logger.info(
 			"Emitting on_server_added event:\n"
-			f"  server_id: {args.server_id}"
+			f"  server id: {args.server_id}\n"
+			f"  owner user id: {args.user_id}\n"
+			f"  owner username: {args.username}\n"
+			f"  owner discriminator: {args.discriminator}\n"
+			f"  owner nickname: {args.nickname}"
 		)
 		self._events.on_server_added(args.server_id)
 
@@ -137,7 +150,7 @@ class CliDiscordService(IDiscordService):
 		"""
 		logger.info(
 			"Emitting on_server_removed event:\n"
-			f"  server_id: {args.server_id}"
+			f"  server id: {args.server_id}"
 		)
 		self._events.on_server_removed(args.server_id)
 
@@ -159,11 +172,11 @@ class CliDiscordService(IDiscordService):
 
 		logger.info(
 			"Emitting on_invite_created event:\n"
-			f"  server_id: {args.server_id}\n"
-			f"  inviter_id: {args.inviter_id}\n"
-			f"  invite_code: {args.invite_code}\n"
-			f"  create_time: {args.create_time}\n"
-			f"  expire_time: {args.expire_time}"
+			f"  server id: {args.server_id}\n"
+			f"  inviter id: {args.inviter_id}\n"
+			f"  invite code: {args.invite_code}\n"
+			f"  create time: {args.create_time}\n"
+			f"  expire time: {args.expire_time}"
 		)
 		self._events.on_invite_created(
 			args.server_id,
@@ -189,8 +202,8 @@ class CliDiscordService(IDiscordService):
 
 		logger.info(
 			"Emitting on_user_joined event:\n"
-			f"  server_id: {args.server_id}\n"
-			f"  user_id: {args.user_id}\n"
+			f"  server id: {args.server_id}\n"
+			f"  user id: {args.user_id}\n"
 			f"  username: {args.username}\n"
 			f"  discriminator: {args.discriminator}"
 		)
@@ -213,8 +226,8 @@ class CliDiscordService(IDiscordService):
 
 		logger.info(
 			"Emitting on_user_left event:\n"
-			f"  server_id: {args.server_id}\n"
-			f"  user_id: {args.user_id}"
+			f"  server id: {args.server_id}\n"
+			f"  user id: {args.user_id}"
 		)
 		self._events.on_user_left(args.server_id, args.user_id)
 
@@ -227,19 +240,19 @@ class CliDiscordService(IDiscordService):
 		# Make sure the arguments for this event were provided
 		if args.user_id is None:
 			raise ValueError("Missing --user-id argument")
-		if args.new_nickname is None:
-			raise ValueError("Missing --new-nickname argument")
+		if args.nickname is None:
+			raise ValueError("Missing --nickname argument")
 
 		logger.info(
 			"Emitting on_user_nickname_changed event:\n"
-			f"  server_id: {args.server_id}\n"
-			f"  user_id: {args.user_id}\n"
-			f"  new_nickname: {args.new_nickname}"
+			f"  server id: {args.server_id}\n"
+			f"  user id: {args.user_id}\n"
+			f"  new nickname: {args.nickname}"
 		)
 		self._events.on_user_nickname_changed(
 			args.server_id,
 			args.user_id,
-			args.new_nickname
+			args.nickname
 		)
 
 
@@ -314,34 +327,38 @@ class CliDiscordService(IDiscordService):
 			type=int,
 			required=False,
 			help="The ID of the user the command is for. Only applicable for "
-				"user_joined, user_left, and user_nickname_changed commands."
+				"server_added, user_joined, user_left, and "
+				"user_nickname_changed commands."
 		)
 		parser.add_argument(
 			"--username",
 			"--name",
+			"-u",
 			dest="username",
 			type=str,
 			required=False,
 			help="The username of the user the command is for. Only applicable "
-				"for user_joined commands."
+				"for server_added and user_joined commands."
 		)
 		parser.add_argument(
 			"--discriminator",
 			"--dc",
+			"-d",
 			dest="discriminator",
 			type=int,
 			required=False,
 			help="The discriminator of the user the command is for. Only "
-				"applicable for user_joined commands."
+				"applicable for server_added and user_joined commands."
 		)
 		parser.add_argument(
-			"--new-nickname",
+			"--nickname",
 			"--nick",
-			dest="new_nickname",
+			"-n",
+			dest="nickname",
 			type=str,
 			required=False,
-			help="The new nickname of the user the command is for. Only "
-				"applicable for user_nickname_changed commands."
+			help="The nickname of the user the command is for. Only "
+				"applicable for server_added and user_nickname_changed commands."
 		)
 
 		return parser

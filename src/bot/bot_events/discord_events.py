@@ -9,7 +9,13 @@ class DiscordEvents(Events):
 	"""
 	__events__ = (
 		# Event emitted when the bot is added to a new server.
-		# Args: (server_id: int)
+		# Args: (
+		#   server_id: int,
+		#   owner_id: int,
+		#   owner_username: str,
+		#   owner_discriminator: int,
+		#   owner_nickname: str
+		# )
 		"on_server_added",
 
 		# Event emitted when the bot is removed from a server.
