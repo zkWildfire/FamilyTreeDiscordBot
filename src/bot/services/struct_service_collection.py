@@ -1,6 +1,7 @@
 from bot.services.cli_service import CliService
 from bot.services.discord.discord_service import IDiscordService
 from bot.services.family_tree.family_tree_service import IFamilyTreeService
+from bot.services.invite.invite_service import IInviteService
 from bot.services.serialization.serialization_service import ISerializationService
 from bot.services.service_collection import IServiceCollection
 from typing import Optional
@@ -13,6 +14,7 @@ class StructServiceCollection(IServiceCollection):
 		cli_service: Optional[CliService],
 		discord_service: IDiscordService,
 		family_tree_service: IFamilyTreeService,
+		invite_service: IInviteService,
 		serialization_service: ISerializationService):
 		"""
 		Initializes a new instance of the class.
@@ -21,12 +23,15 @@ class StructServiceCollection(IServiceCollection):
 		@param discord_service The service used to emit events in response to
 		  Discord API events.
 		@param family_tree_service The service used to manage family trees.
+		@param invite_service The service used to determine who invited a user
+		  to a server.
 		@param serialization_service The service used to save and load data from
 		  disk.
 		"""
 		self._cli_service = cli_service
 		self._discord_service = discord_service
 		self._family_tree_service = family_tree_service
+		self._invite_service = invite_service
 		self._serialization_service = serialization_service
 
 
@@ -54,6 +59,14 @@ class StructServiceCollection(IServiceCollection):
 		The service used to manage family trees.
 		"""
 		return self._family_tree_service
+
+
+	@property
+	def invite_service(self) -> IInviteService:
+		"""
+		The service used to determine who invited a user to a server.
+		"""
+		return self._invite_service
 
 
 	@property

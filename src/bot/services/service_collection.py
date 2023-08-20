@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from bot.services.cli_service import CliService
 from bot.services.discord.discord_service import IDiscordService
 from bot.services.family_tree.family_tree_service import IFamilyTreeService
+from bot.services.invite.invite_service import IInviteService
 from bot.services.serialization.serialization_service import ISerializationService
 from typing import Optional
 
@@ -34,6 +35,15 @@ class IServiceCollection(ABC):
 	def family_tree_service(self) -> IFamilyTreeService:
 		"""
 		The service used to manage family trees.
+		"""
+		raise NotImplementedError()
+
+
+	@property
+	@abstractmethod
+	def invite_service(self) -> IInviteService:
+		"""
+		The service used to determine who invited a user to a server.
 		"""
 		raise NotImplementedError()
 

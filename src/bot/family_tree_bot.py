@@ -6,6 +6,7 @@ from bot.services.cli_service import CliService
 from bot.services.discord.api_discord_service import ApiDiscordService
 from bot.services.discord.cli_discord_service import CliDiscordService
 from bot.services.family_tree.dict_family_tree_service import DictFamilyTreeService
+from bot.services.invite.most_recent_invite_service import MostRecentInviteService
 from bot.services.serialization.json_serialization_service import JsonSerializationService
 from bot.services.service_collection import IServiceCollection
 from bot.services.struct_service_collection import StructServiceCollection
@@ -123,6 +124,7 @@ def make_services(args: CliArgs) -> IServiceCollection:
 		cli_service = None
 
 	family_tree_service = DictFamilyTreeService()
+	invite_service = MostRecentInviteService()
 	serialization_service = JsonSerializationService(Path(args.save_path))
 
 	# Bind to events
@@ -156,6 +158,7 @@ def make_services(args: CliArgs) -> IServiceCollection:
 		cli_service,
 		discord_service,
 		family_tree_service,
+		invite_service,
 		serialization_service
 	)
 
