@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # Entry point for the Family Tree Discord bot.
 import argparse
+from bot.models.tree_node import TreeNode
 from bot.services.cli_service import CliService
 from bot.services.discord.api_discord_service import ApiDiscordService
 from bot.services.discord.cli_discord_service import CliDiscordService
@@ -21,6 +22,9 @@ LOG_LEVELS: Dict[str, int] = {
 	"info": logging.INFO,
 	"debug": logging.DEBUG
 }
+
+# Background color used by default for nodes in generated diagrams
+DEFAULT_NODE_BACKGROUND_COLOR = "#FFFFFF"
 
 class BotFormatter(logging.Formatter):
 	"""
@@ -122,6 +126,28 @@ def make_services(args: CliArgs) -> IServiceCollection:
 	serialization_service = JsonSerializationService(Path(args.save_path))
 
 	# Bind to events
+	def on_server_added(
+		server_id: int,
+		owner_id: int,
+		owner_username: str,
+		owner_discriminator: int,
+		owner_nickname: str) -> None:
+		"""
+		Helper method for converting the event data to a tree node.
+		"""
+		root_node = TreeNode(
+			owner_id,
+			owner_username,
+			owner_discriminator,
+			owner_nickname,
+			DEFAULT_NODE_BACKGROUND_COLOR,
+			None
+		)
+		family_tree_service.register_discord_server(server_id, root_node)
+
+	discord_service.events.on_server_added += on_server_added # type: ignore
+	discord_service.events.on_server_removed += family_tree_service.remove_discord_server # type: ignore
+
 	family_tree_service.events.on_family_tree_created += serialization_service.save_tree # type: ignore
 	family_tree_service.events.on_family_tree_modified += serialization_service.save_tree # type: ignore
 	family_tree_service.events.on_family_tree_removed += serialization_service.remove_tree # type: ignore

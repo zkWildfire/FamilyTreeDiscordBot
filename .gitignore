@@ -255,3 +255,6 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,linux,vim,visualstudiocode,python
 
+# Ignore the config and save files used for local testing
+src/bot/config.yml
+src/bot/trees.json

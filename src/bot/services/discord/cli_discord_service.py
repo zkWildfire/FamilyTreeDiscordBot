@@ -140,7 +140,13 @@ class CliDiscordService(IDiscordService):
 			f"  owner discriminator: {args.discriminator}\n"
 			f"  owner nickname: {args.nickname}"
 		)
-		self._events.on_server_added(args.server_id)
+		self._events.on_server_added(
+			args.server_id,
+			args.user_id,
+			args.username,
+			args.discriminator,
+			args.nickname
+		)
 
 
 	def _emit_on_server_removed(self, args: CliDiscordServiceArgs) -> None:

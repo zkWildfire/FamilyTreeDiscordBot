@@ -4,7 +4,7 @@ from bot.models.tree_node import TreeNode
 from bot.services.serialization.serialization_service import ISerializationService
 import json
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List, Optional
 
 class JsonSerializationService(ISerializationService):
 	"""
@@ -41,11 +41,13 @@ class JsonSerializationService(ISerializationService):
 		"""
 		trees = self.load_trees()
 		trees[server_id] = tree
-		with self._save_path.open("w") as f:
-			json.dump({
-				str(server_id): self._tree_to_list(tree)
+		JsonSerializationService._write(
+			self._save_path,
+			{
+				server_id: JsonSerializationService._tree_to_list(tree)
 				for server_id, tree in trees.items()
-			}, f)
+			}
+		)
 
 
 	def remove_tree(self, server_id: int) -> None:
@@ -55,36 +57,114 @@ class JsonSerializationService(ISerializationService):
 		"""
 		trees = self.load_trees()
 		del trees[server_id]
-		with self._save_path.open("w") as f:
-			json.dump({
-				str(server_id): self._tree_to_list(tree)
-				for server_id, tree in trees.items()
-			}, f)
+		JsonSerializationService._write(self._save_path, trees)
 
 
 	@staticmethod
-	def _tree_to_list(tree: IFamilyTree) -> List[TreeNode]:
+	def _tree_to_list(tree: IFamilyTree) -> List[Dict[str, Any]]:
 		"""
 		Converts the given tree to a list.
 		@param tree The tree to convert.
 		@returns A list that contains all nodes in the tree. The first node in
 		  the list will always be the root node.
 		"""
-		return list(tree.get_view())
+		return [
+			JsonSerializationService._node_to_dict(n) for n in tree.get_view()
+		]
 
 
 	@staticmethod
-	def _list_to_tree(nodes: List[TreeNode]) -> IFamilyTree:
+	def _list_to_tree(nodes: List[Dict[str, Any]]) -> IFamilyTree:
 		"""
 		Converts the given list to a tree.
-		@param nodes The list of nodes to convert.
+		@param nodes The list of dictionaries representing tree nodes.
 		@returns A tree that contains all nodes in the list.
 		"""
 		if not nodes:
 			raise ValueError("Cannot convert an empty list to a tree.")
 
-		root_node = nodes[0]
+		# Create each node and store it in a dictionary indexed by each node's
+		#   discord ID.
+		# This is necessary because the deserialization process will not restore
+		#   the `inviter` property. Instead, that property will be set after
+		#   all nodes have been created.
+		nodes_dict: Dict[int, TreeNode] = {
+			int(node_dict["discord_id"]): \
+				JsonSerializationService._dict_to_node(node_dict)
+			for node_dict in nodes
+		}
+
+		# Iterate over each node and set its inviter property
+		for node_dict in nodes:
+			# Find the node corresponding to the current node dictionary
+			node = nodes_dict[int(node_dict["discord_id"])]
+
+			# If the node has an inviter, find the corresponding node and set
+			#   the inviter property
+			if node_dict["inviter"]:
+				node.inviter = nodes_dict[int(node_dict["inviter"])]
+
+		# Find the root node
+		root_node = next(iter(
+			[n for n in nodes_dict.values() if n.inviter == None]
+		))
+
 		tree = DictFamilyTree(root_node)
-		for node in nodes[1:]:
-			tree.add_node(node)
+		for node in nodes_dict.values():
+			if node != root_node:
+				tree.add_node(node)
 		return tree
+
+
+	@staticmethod
+	def _node_to_dict(node: TreeNode) -> Dict[str, Optional[str]]:
+		"""
+		Converts the given node to a dictionary.
+		@param node The node to convert.
+		@returns A dictionary that contains all node data.
+		"""
+		return {
+			"discord_id": str(node.discord_id),
+			"username": node.discord_username,
+			"discriminator": str(node.discord_discriminator),
+			"nickname": node.user_nickname,
+			"background_color": node.background_color,
+			"inviter": str(node.inviter.discord_id) if node.inviter else None
+		}
+
+
+	@staticmethod
+	def _dict_to_node(node_dict: Dict[str, Optional[str]]) -> TreeNode:
+		"""
+		Converts the given dictionary to a node.
+		@warning This method will create a new tree node object but will not set
+		  its inviter property. The inviter property must be set by the caller
+		  after all nodes have been created.
+		@param node_dict The dictionary to convert.
+		@returns A node that contains all data in the dictionary.
+		"""
+		assert node_dict["discord_id"] is not None
+		assert node_dict["username"] is not None
+		assert node_dict["discriminator"] is not None
+		assert node_dict["nickname"] is not None
+		assert node_dict["background_color"] is not None
+
+		return TreeNode(
+			int(node_dict["discord_id"]),
+			node_dict["username"],
+			int(node_dict["discriminator"]),
+			node_dict["nickname"],
+			node_dict["background_color"],
+			None
+		)
+
+
+	@staticmethod
+	def _write(file: Path, data: Dict[Any, Any]) -> None:
+		"""
+		Writes the given data to the given file.
+		@param file The file to write to.
+		@param data The data to write to the file.
+		"""
+		with file.open("w") as f:
+			json.dump(data, f, indent=2)
