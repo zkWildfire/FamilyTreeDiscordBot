@@ -19,9 +19,9 @@ class DictFamilyTree(IFamilyTree):
 		self._events = FamilyTreeEvents()
 
 		# Dictionary of all nodes in the tree
-		# Each node is indexed by the full username of the user.
-		self._nodes: Dict[str, TreeNode] = {
-			root_node.discord_full_username: root_node
+		# Each node is indexed by the user's discord account ID
+		self._nodes: Dict[int, TreeNode] = {
+			root_node.discord_id: root_node
 		}
 
 
@@ -51,7 +51,7 @@ class DictFamilyTree(IFamilyTree):
 		@throws ValueError If the inviter for the given node is None.
 		"""
 		# Make sure the node does not already exist in the tree
-		if node.discord_full_username in self._nodes:
+		if node.discord_id in self._nodes:
 			raise ValueError(
 				f"Node for user {node.discord_full_username} already exists."
 			)
@@ -61,27 +61,54 @@ class DictFamilyTree(IFamilyTree):
 			raise RuntimeError(
 				"Cannot add a second root node to the tree."
 			)
-		if node.inviter.discord_full_username not in self._nodes:
+		if node.inviter.discord_id not in self._nodes:
 			raise ValueError(
 				f"Inviter for user {node.discord_full_username} does not exist."
 			)
 
 		# Add the node to the tree
-		self._nodes[node.discord_full_username] = node
+		self._nodes[node.discord_id] = node
 
 
-	def find_node_by_username(self, username: str, user_id: int) -> TreeNode:
+	def find_node_by_user_id(self, user_id: int) -> TreeNode:
+		"""
+		Finds a node in the tree by the user's discord ID.
+		@param user_id The unique ID associated with the user's discord account.
+		@throws KeyError If a node for the given user does not exist in the tree.
+		@returns The node for the given username.
+		"""
+		view = self.get_view().filter_by_user_id(user_id)
+		if len(view) == 0:
+			raise KeyError(
+				f"Node for user {user_id} does not exist."
+			)
+
+		assert len(view) == 1
+		return next(iter(view))
+
+
+	def find_node_by_username(self,
+		username: str,
+		discriminator: int) -> TreeNode:
 		"""
 		Finds a node in the tree by the user's discord username.
 		@param username The discord username to search for.
-		@param user_id The discriminator associated with the user's discord
-		  account.
+		@param discriminator The discriminator associated with the user's
+		  discord account.
 		@throws KeyError If a node for the given username does not exist in
 		  the tree.
 		@returns The node for the given username.
 		"""
-		full_username = DiscordStatics.get_full_username(username, user_id)
-		return self._nodes[full_username]
+		full_username = DiscordStatics.get_full_username(username, discriminator)
+		view = self.get_view().filter_by_username(full_username)\
+			.filter_by_discriminator(discriminator)
+		if len(view) == 0:
+			raise KeyError(
+				f"Node for user {full_username} does not exist."
+			)
+
+		assert len(view) == 1
+		return next(iter(view))
 
 
 	def get_view(self) -> ITreeView:
@@ -103,7 +130,7 @@ class DictFamilyTree(IFamilyTree):
 		# Get the node to remove
 		node = self.find_node_by_username(
 			node.discord_username,
-			node.discord_user_id
+			node.discord_discriminator
 		)
 
 		# Make sure the node is not the root node
@@ -116,4 +143,4 @@ class DictFamilyTree(IFamilyTree):
 			child_node.inviter = node.inviter
 
 		# Remove the node from the tree
-		del self._nodes[node.discord_full_username]
+		del self._nodes[node.discord_id]

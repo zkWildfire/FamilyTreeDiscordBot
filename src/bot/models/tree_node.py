@@ -7,30 +7,41 @@ class TreeNode:
 	Represents all data for a node in the generated family tree diagram.
 	"""
 	def __init__(self,
-		discord_username: str,
-		discord_user_id: int,
-		user_nickname: str,
+		user_id: int,
+		username: str,
+		discriminator: int,
+		nickname: str,
 		background_color: str,
 		inviter: Optional[TreeNode]):
 		"""
 		Initializes a new instance of the TreeNode class.
-		@param discord_username The username of the user's discord account.
-		@param discord_user_id The discriminator associated with the user's
+		@param user_id The unique ID of the user's discord account.
+		@param username The username of the user's discord account.
+		@param discriminator The discriminator associated with the user's
 		  discord account. Most accounts will have a discriminator of 0 since
 		  discord migrated all user accounts to unique names. However, since
 		  discriminators are still visible to bots, the value is still included
 		  in the data model.
-		@param user_nickname The nickname of the user in the server. This will
+		@param nickname The nickname of the user in the server. This will
 		  be what is displayed in the generated diagram for the user and may
 		  change over time.
 		@param background_color The background color to use for the user's node
 		  in the generated diagram.
 		"""
-		self._discord_username = discord_username
-		self._discord_user_id = discord_user_id
-		self._user_nickname = user_nickname
+		self._user_id = user_id
+		self._username = username
+		self._discriminator = discriminator
+		self._nickname = nickname
 		self._background_color = background_color
 		self._inviter = inviter
+
+
+	@property
+	def discord_id(self) -> int:
+		"""
+		Gets the ID of the user's discord account.
+		"""
+		return self._user_id
 
 
 	@property
@@ -40,8 +51,8 @@ class TreeNode:
 		This is the username and discriminator combined.
 		"""
 		return DiscordStatics.get_full_username(
-			self._discord_username,
-			self._discord_user_id
+			self._username,
+			self._discriminator
 		)
 
 
@@ -50,18 +61,18 @@ class TreeNode:
 		"""
 		Gets the username of the user's discord account.
 		"""
-		return self._discord_username
+		return self._username
 
 
 	@property
-	def discord_user_id(self) -> int:
+	def discord_discriminator(self) -> int:
 		"""
 		Gets the discriminator associated with the user's discord account.
 		Most accounts will have a discriminator of 0 since discord migrated all
 		  user accounts to unique names. However, since discriminators are still
 		  visible to bots, the value is still included in the data model.
 		"""
-		return self._discord_user_id
+		return self._discriminator
 
 
 	@property
@@ -71,7 +82,7 @@ class TreeNode:
 		This will be what is displayed in the generated diagram for the user and
 		  may change over time.
 		"""
-		return self._user_nickname
+		return self._nickname
 
 
 	@user_nickname.setter
@@ -83,7 +94,7 @@ class TreeNode:
 		if not value:
 			raise ValueError("Cannot set a user's nickname to the empty string.")
 
-		self._user_nickname = value
+		self._nickname = value
 
 
 	@property

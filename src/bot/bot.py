@@ -22,6 +22,10 @@ class CliArgs(argparse.Namespace):
 	#   be interpreted relative to the current working directory.
 	save_path: str
 
+	# If enabled, provides a CLI to simulate Discord events instead of
+	#   connecting to Discord's API.
+	local: bool
+
 
 def make_parser() -> argparse.ArgumentParser:
 	"""
@@ -42,6 +46,12 @@ def make_parser() -> argparse.ArgumentParser:
 		default="trees.json",
 		type=str,
 		help="The path to the file to save family trees to."
+	)
+	parser.add_argument(
+		"--local",
+		action="store_true",
+		help="If enables, uses a CLI to simulate Discord events instead of "
+			"connecting to Discord's API."
 	)
 	return parser
 

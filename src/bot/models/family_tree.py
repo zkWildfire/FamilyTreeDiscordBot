@@ -38,12 +38,25 @@ class IFamilyTree(ABC):
 
 
 	@abstractmethod
-	def find_node_by_username(self, username: str, user_id: int) -> TreeNode:
+	def find_node_by_user_id(self, user_id: int) -> TreeNode:
+		"""
+		Finds a node in the tree by the user's discord ID.
+		@param user_id The unique ID associated with the user's discord account.
+		@throws KeyError If a node for the given user does not exist in the tree.
+		@returns The node for the given username.
+		"""
+		raise NotImplementedError()
+
+
+	@abstractmethod
+	def find_node_by_username(self,
+		username: str,
+		discriminator: int) -> TreeNode:
 		"""
 		Finds a node in the tree by the user's discord username.
 		@param username The discord username to search for.
-		@param user_id The discriminator associated with the user's discord
-		  account.
+		@param discriminator The discriminator associated with the user's
+		  discord account.
 		@throws KeyError If a node for the given username does not exist in
 		  the tree.
 		@returns The node for the given username.
