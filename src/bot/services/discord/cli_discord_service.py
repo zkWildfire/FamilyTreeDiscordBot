@@ -75,80 +75,7 @@ class CliDiscordService(IDiscordService):
 		}
 
 		# Parser used to process commands typed into the terminal
-		self._parser = argparse.ArgumentParser(
-			description="Processes event commands originating from the CLI "
-				"for testing purposes.",
-			exit_on_error=False
-		)
-		self._parser.add_argument(
-			"--type",
-			choices=self._cmd_handlers.keys(),
-			type=str,
-			required=True,
-			help="The type of command to process."
-		)
-		self._parser.add_argument(
-			"--server-id",
-			type=int,
-			required=True,
-			help="The ID of the server the command is for."
-		)
-		self._parser.add_argument(
-			"--inviter-id",
-			type=int,
-			required=False,
-			help="The ID of the user who created the invite. Only applicable "
-				"for invite_created commands."
-		)
-		self._parser.add_argument(
-			"--invite-code",
-			type=str,
-			required=False,
-			help="The code of the invite. Only applicable for invite_created "
-				"commands."
-		)
-		self._parser.add_argument(
-			"--create-time",
-			type=str,
-			required=False,
-			help="The time the invite was created. Only applicable for "
-				"invite_created commands."
-		)
-		self._parser.add_argument(
-			"--expire-time",
-			type=str,
-			required=False,
-			help="The time the invite expires. Only applicable for "
-				"invite_created commands."
-		)
-		self._parser.add_argument(
-			"--user-id",
-			type=int,
-			required=False,
-			help="The ID of the user the command is for. Only applicable for "
-				"user_joined, user_left, and user_nickname_changed commands."
-		)
-		self._parser.add_argument(
-			"--username",
-			type=str,
-			required=False,
-			help="The username of the user the command is for. Only applicable "
-				"for user_joined commands."
-		)
-		self._parser.add_argument(
-			"--discriminator",
-			type=int,
-			required=False,
-			help="The discriminator of the user the command is for. Only "
-				"applicable for user_joined commands."
-		)
-		self._parser.add_argument(
-			"--new-nickname",
-			type=str,
-			required=False,
-			help="The new nickname of the user the command is for. Only "
-				"applicable for user_nickname_changed commands."
-		)
+		self._parser = self._make_parser(list(self._cmd_handlers.keys()))
 
 
 	@property
@@ -264,3 +191,87 @@ class CliDiscordService(IDiscordService):
 			args.user_id,
 			args.new_nickname
 		)
+
+
+	def _make_parser(self, cmds: List[str]) -> argparse.ArgumentParser:
+		"""
+		Creates the argument parser for the service.
+		@param cmds The commands that can be processed by the service.
+		@returns The argument parser for the service.
+		"""
+		parser = argparse.ArgumentParser(
+			description="Processes event commands originating from the CLI "
+				"for testing purposes.",
+			exit_on_error=False
+		)
+		parser.add_argument(
+			"--type",
+			choices=cmds,
+			type=str,
+			required=True,
+			help="The type of command to process."
+		)
+		parser.add_argument(
+			"--server-id",
+			type=int,
+			required=True,
+			help="The ID of the server the command is for."
+		)
+		parser.add_argument(
+			"--inviter-id",
+			type=int,
+			required=False,
+			help="The ID of the user who created the invite. Only applicable "
+				"for invite_created commands."
+		)
+		parser.add_argument(
+			"--invite-code",
+			type=str,
+			required=False,
+			help="The code of the invite. Only applicable for invite_created "
+				"commands."
+		)
+		parser.add_argument(
+			"--create-time",
+			type=str,
+			required=False,
+			help="The time the invite was created. Only applicable for "
+				"invite_created commands."
+		)
+		parser.add_argument(
+			"--expire-time",
+			type=str,
+			required=False,
+			help="The time the invite expires. Only applicable for "
+				"invite_created commands."
+		)
+		parser.add_argument(
+			"--user-id",
+			type=int,
+			required=False,
+			help="The ID of the user the command is for. Only applicable for "
+				"user_joined, user_left, and user_nickname_changed commands."
+		)
+		parser.add_argument(
+			"--username",
+			type=str,
+			required=False,
+			help="The username of the user the command is for. Only applicable "
+				"for user_joined commands."
+		)
+		parser.add_argument(
+			"--discriminator",
+			type=int,
+			required=False,
+			help="The discriminator of the user the command is for. Only "
+				"applicable for user_joined commands."
+		)
+		parser.add_argument(
+			"--new-nickname",
+			type=str,
+			required=False,
+			help="The new nickname of the user the command is for. Only "
+				"applicable for user_nickname_changed commands."
+		)
+
+		return parser

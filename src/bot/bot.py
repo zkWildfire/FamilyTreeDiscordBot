@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # Entry point for the Family Tree Discord bot.
 import argparse
+from bot.services.cli_service import CliService
+from bot.services.discord.api_discord_service import ApiDiscordService
+from bot.services.discord.cli_discord_service import CliDiscordService
 from bot.services.family_tree.dict_family_tree_service import DictFamilyTreeService
 from bot.services.serialization.json_serialization_service import JsonSerializationService
 from bot.services.service_collection import IServiceCollection
@@ -62,6 +65,13 @@ def make_services(args: CliArgs) -> IServiceCollection:
 	@param args The command line arguments for the bot.
 	@returns The service collection for the bot.
 	"""
+	if args.local:
+		discord_service = CliDiscordService()
+		cli_service = CliService(discord_service)
+	else:
+		discord_service = ApiDiscordService()
+		cli_service = None
+
 	family_tree_service = DictFamilyTreeService()
 	serialization_service = JsonSerializationService(Path(args.save_path))
 
@@ -71,6 +81,8 @@ def make_services(args: CliArgs) -> IServiceCollection:
 	family_tree_service.events.on_family_tree_removed += serialization_service.remove_tree # type: ignore
 
 	return StructServiceCollection(
+		cli_service,
+		discord_service,
 		family_tree_service,
 		serialization_service
 	)
@@ -88,6 +100,11 @@ def main(*cli_args: str) -> int:
 
 	# Create the service collection
 	services = make_services(args)
+
+	# Run the bot
+	if args.local:
+		assert services.cli_service is not None
+		services.cli_service.run()
 
 	return 0
 
