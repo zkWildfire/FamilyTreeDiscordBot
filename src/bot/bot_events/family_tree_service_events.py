@@ -6,14 +6,14 @@ class FamilyTreeServiceEvents(Events):
 	"""
 	__events__ = (
 		# Event emitted when a Discord server is added.
-		# Args: (discord_server_id: int, family_tree: IFamilyTree)
+		# Args: (server_id: int, family_tree: IFamilyTree)
 		"on_family_tree_created",
 
 		# Event emitted when a family tree is modified.
-		# Args: (discord_server_id: int, family_tree: IFamilyTree)
+		# Args: (server_id: int, family_tree: IFamilyTree)
 		"on_family_tree_modified",
 
 		# Event emitted when a Discord server is removed.
-		# Args: (discord_server_id: int)
+		# Args: (server_id: int)
 		"on_family_tree_removed"
 	)

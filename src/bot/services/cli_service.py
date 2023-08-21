@@ -1,5 +1,5 @@
 import argparse
-from bot.services.discord.cli_discord_service import CliDiscordService
+from bot.services.discord.cli_discord_events_service import CliDiscordEventsService
 from typing import Callable, Dict, List
 
 class CliArgs(argparse.Namespace):
@@ -24,7 +24,7 @@ class CliService:
 	EXIT_CMD = "exit"
 
 	def __init__(self,
-		discord_service: CliDiscordService):
+		discord_service: CliDiscordEventsService):
 		"""
 		Initializes the service.
 		@param discord_service The service to pass discord event commands to

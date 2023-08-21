@@ -1,12 +1,12 @@
 import argparse
 from bot.bot_events.discord_events import DiscordEvents
-from bot.services.discord.discord_service import IDiscordService
+from bot.services.discord.discord_events_service import IDiscordEventsService
 import logging
 from typing import Callable, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
-class CliDiscordServiceArgs(argparse.Namespace):
+class CliDiscordEventsServiceArgs(argparse.Namespace):
 	"""
 	Defines the command line arguments for the CLI Discord service.
 	"""
@@ -57,7 +57,7 @@ class CliDiscordServiceArgs(argparse.Namespace):
 	nickname: Optional[str]
 
 
-class CliDiscordService(IDiscordService):
+class CliDiscordEventsService(IDiscordEventsService):
 	"""
 	Service that emits events in response to commands typed into the terminal.
 	"""
@@ -68,7 +68,7 @@ class CliDiscordService(IDiscordService):
 		self._events = DiscordEvents()
 
 		# Maps command types to the functions that process them
-		self._cmd_handlers: Dict[str, Callable[[CliDiscordServiceArgs], None]] = {
+		self._cmd_handlers: Dict[str, Callable[[CliDiscordEventsServiceArgs], None]] = {
 			"server_added": self._emit_on_server_added,
 			"server_removed": self._emit_on_server_removed,
 			"invite_created": self._emit_on_invite_created,
@@ -97,7 +97,7 @@ class CliDiscordService(IDiscordService):
 		try:
 			args = self._parser.parse_args(
 				cli_args,
-				namespace=CliDiscordServiceArgs()
+				namespace=CliDiscordEventsServiceArgs()
 			)
 			self._cmd_handlers[args.type](args)
 		# For some reason, even though the parser is configured with
@@ -118,7 +118,7 @@ class CliDiscordService(IDiscordService):
 			print(e)
 
 
-	def _emit_on_server_added(self, args: CliDiscordServiceArgs) -> None:
+	def _emit_on_server_added(self, args: CliDiscordEventsServiceArgs) -> None:
 		"""
 		Emits the on_server_added event.
 		@param args The command line arguments to process.
@@ -149,7 +149,7 @@ class CliDiscordService(IDiscordService):
 		)
 
 
-	def _emit_on_server_removed(self, args: CliDiscordServiceArgs) -> None:
+	def _emit_on_server_removed(self, args: CliDiscordEventsServiceArgs) -> None:
 		"""
 		Emits the on_server_removed event.
 		@param args The command line arguments to process.
@@ -161,7 +161,7 @@ class CliDiscordService(IDiscordService):
 		self._events.on_server_removed(args.server_id)
 
 
-	def _emit_on_invite_created(self, args: CliDiscordServiceArgs) -> None:
+	def _emit_on_invite_created(self, args: CliDiscordEventsServiceArgs) -> None:
 		"""
 		Emits the on_invite_created event.
 		@param args The command line arguments to process.
@@ -193,7 +193,7 @@ class CliDiscordService(IDiscordService):
 		)
 
 
-	def _emit_on_user_joined(self, args: CliDiscordServiceArgs) -> None:
+	def _emit_on_user_joined(self, args: CliDiscordEventsServiceArgs) -> None:
 		"""
 		Emits the on_user_joined event.
 		@param args The command line arguments to process.
@@ -221,7 +221,7 @@ class CliDiscordService(IDiscordService):
 		)
 
 
-	def _emit_on_user_left(self, args: CliDiscordServiceArgs) -> None:
+	def _emit_on_user_left(self, args: CliDiscordEventsServiceArgs) -> None:
 		"""
 		Emits the on_user_left event.
 		@param args The command line arguments to process.
@@ -238,7 +238,7 @@ class CliDiscordService(IDiscordService):
 		self._events.on_user_left(args.server_id, args.user_id)
 
 
-	def _emit_on_user_nickname_changed(self, args: CliDiscordServiceArgs) -> None:
+	def _emit_on_user_nickname_changed(self, args: CliDiscordEventsServiceArgs) -> None:
 		"""
 		Emits the on_user_nickname_changed event.
 		@param args The command line arguments to process.

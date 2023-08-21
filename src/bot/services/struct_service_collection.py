@@ -1,5 +1,5 @@
 from bot.services.cli_service import CliService
-from bot.services.discord.discord_service import IDiscordService
+from bot.services.discord.discord_events_service import IDiscordEventsService
 from bot.services.family_tree.family_tree_service import IFamilyTreeService
 from bot.services.invite.invite_service import IInviteService
 from bot.services.serialization.serialization_service import ISerializationService
@@ -12,7 +12,7 @@ class StructServiceCollection(IServiceCollection):
 	"""
 	def __init__(self,
 		cli_service: Optional[CliService],
-		discord_service: IDiscordService,
+		discord_service: IDiscordEventsService,
 		family_tree_service: IFamilyTreeService,
 		invite_service: IInviteService,
 		serialization_service: ISerializationService):
@@ -46,7 +46,7 @@ class StructServiceCollection(IServiceCollection):
 
 
 	@property
-	def discord_service(self) -> IDiscordService:
+	def discord_service(self) -> IDiscordEventsService:
 		"""
 		The service used to emit events in response to Discord API events.
 		"""

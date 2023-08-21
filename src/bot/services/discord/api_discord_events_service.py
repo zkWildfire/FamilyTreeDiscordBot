@@ -1,7 +1,7 @@
 from bot.bot_events.discord_events import DiscordEvents
-from bot.services.discord.discord_service import IDiscordService
+from bot.services.discord.discord_events_service import IDiscordEventsService
 
-class ApiDiscordService(IDiscordService):
+class ApiDiscordEventsService(IDiscordEventsService):
 	"""
 	Service that emits events in response to Discord API events.
 	"""

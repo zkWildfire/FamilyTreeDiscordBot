@@ -3,8 +3,8 @@
 import argparse
 from bot.models.tree_node import TreeNode
 from bot.services.cli_service import CliService
-from bot.services.discord.api_discord_service import ApiDiscordService
-from bot.services.discord.cli_discord_service import CliDiscordService
+from bot.services.discord.api_discord_events_service import ApiDiscordService
+from bot.services.discord.cli_discord_events_service import CliDiscordService
 from bot.services.family_tree.dict_family_tree_service import DictFamilyTreeService
 from bot.services.invite.most_recent_invite_service import MostRecentInviteService
 from bot.services.serialization.json_serialization_service import JsonSerializationService

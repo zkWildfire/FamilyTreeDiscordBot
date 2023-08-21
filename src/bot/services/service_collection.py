@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from bot.services.cli_service import CliService
-from bot.services.discord.discord_service import IDiscordService
+from bot.services.discord.discord_events_service import IDiscordEventsService
 from bot.services.family_tree.family_tree_service import IFamilyTreeService
 from bot.services.invite.invite_service import IInviteService
 from bot.services.serialization.serialization_service import ISerializationService
@@ -23,7 +23,7 @@ class IServiceCollection(ABC):
 
 	@property
 	@abstractmethod
-	def discord_service(self) -> IDiscordService:
+	def discord_service(self) -> IDiscordEventsService:
 		"""
 		The service used to emit events in response to Discord API events.
 		"""
